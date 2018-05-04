@@ -1,4 +1,6 @@
 import React from 'react'
+import Header from './Header'
+import Todo from './Todo'
 
 class App extends React.Component {
   state = { todos: [] }
@@ -15,14 +17,15 @@ class App extends React.Component {
     this.addTodo()
   }
 
-  addTodo = () => {
-    this.setState(previousState => {
+  addTodo = async () => {
+    await this.setState(previousState => {
       return {
         todos: [
           ...previousState.todos,
           {
             id: this.id,
-            text: this.state.inputText
+            text: this.state.inputText,
+            isDone: false
           }
         ]
       }
@@ -33,13 +36,13 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <h1>Todo app</h1>
+        <Header title="Todo App" />
         <form onSubmit={this.handleSubmit}>
           <input type="text" onChange={this.handleChange} />
         </form>
         <ul>
-          {this.state.todos.map(item => {
-            return <li key={item.id}>{item.text}</li>
+          {this.state.todos.map(todo => {
+            return <Todo key={todo.id} todo={todo} />
           })}
         </ul>
         <pre>{JSON.stringify(this.state)}</pre>

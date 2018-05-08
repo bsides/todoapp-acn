@@ -25,12 +25,44 @@ class App extends React.Component {
           {
             id: this.id,
             text: this.state.inputText,
-            isDone: false
+            isDone: false,
+            isEditing: false
           }
         ]
       }
     })
     this.id = this.id + 1
+  }
+
+  removeTodo = id => e => {
+    const todos = this.state.todos.filter(todo => todo.id !== id)
+    this.setState({ todos })
+  }
+
+  toggleTodo = id => e => {
+    const todos = this.state.todos.map(todo => {
+      if (todo.id === id) {
+        todo.isDone = !todo.isDone
+      }
+      return todo
+    })
+    this.setState({ todos })
+  }
+
+  aboutToEdit = id => e => {
+    const todos = this.state.todos.map(todo => {
+      const result =
+        todo.id === id ? { ...todo, isEditing: !todo.isEditing } : todo
+      return result
+    })
+    this.setState({ todos })
+  }
+
+  editTodo = (id, text) => {
+    const todos = this.state.todos.map(
+      todo => (todo.id === id ? { ...todo, text, isEditing: false } : todo)
+    )
+    this.setState({ todos })
   }
 
   render() {
@@ -42,7 +74,17 @@ class App extends React.Component {
         </form>
         <ul>
           {this.state.todos.map(todo => {
-            return <Todo key={todo.id} todo={todo} />
+            return (
+              <Todo
+                key={todo.id}
+                todo={todo}
+                toggleTodo={this.toggleTodo}
+                editTodo={this.editTodo}
+                removeTodo={this.removeTodo}
+                isEditing={todo.isEditing}
+                aboutToEdit={this.aboutToEdit}
+              />
+            )
           })}
         </ul>
         <pre>{JSON.stringify(this.state)}</pre>
